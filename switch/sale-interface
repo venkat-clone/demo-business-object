@@ -1,0 +1,62 @@
+// sales-service/src/businessObjects/Sale.js
+
+class Sale {
+  constructor(id, saleType) {
+    this.id = id;
+    this.saleType = saleType;  // "COUNTER", "VEHICLE", "SERVICE_JOBCARD"
+  }
+  
+  validate() {
+    throw new Error("Must implement validate in subclass");
+  }
+}
+
+class CounterSale extends Sale {
+  constructor(id, products) {
+    super(id, "COUNTER");
+    this.products = products; // array of product objects
+    this.model = null;
+  }
+  
+  validate() {
+    if (!this.products || this.products.length === 0) {
+      throw new Error("CounterSale must have products");
+    }
+  }
+}
+
+class VehicleSale extends Sale {
+  constructor(id, model) {
+    super(id, "VEHICLE");
+    this.model = model;  // model object
+    this.products = null;
+  }
+  
+  validate() {
+    if (!this.model) {
+      throw new Error("VehicleSale must have a model");
+    }
+  }
+}
+
+class ServiceJobcard extends Sale {
+  constructor(id, parts) {
+    super(id, "SERVICE_JOBCARD");
+    this.parts = parts; // array of part objects
+    this.products = null;
+    this.model = null;
+  }
+  
+  validate() {
+    if (!this.parts || this.parts.length === 0) {
+      throw new Error("ServiceJobcard must have parts");
+    }
+  }
+}
+
+module.exports = {
+  Sale,
+  CounterSale,
+  VehicleSale,
+  ServiceJobcard,
+};
