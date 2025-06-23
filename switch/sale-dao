@@ -1,0 +1,33 @@
+class SalesDao {
+  constructor(prisma) {
+    this.prisma = prisma;
+  }
+
+  async saveSale(sale) {
+    // Map business object to DB model depending on sale.saleType
+    switch(sale.saleType) {
+      case "COUNTER":
+        return this.prisma.counterSales.create({
+          data: {
+            products: {
+              connect: sale.products.map(p => ({ id: p.id })),
+            },
+          },
+        });
+      case "VEHICLE":
+        return this.prisma.vehicleSales.create({
+          data: {
+            modelId: sale.model.id,
+          },
+        });
+      case "SERVICE_JOBCARD":
+        return this.prisma.serviceJobcards.create({
+          data: {
+            parts: {
+              connect: sale.parts.map(part => ({ id: part.id })),
+            },
+          },
+        });
+    }
+  }
+}
